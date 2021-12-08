@@ -91,10 +91,30 @@ class TMB_DAO:
         if self.is_stub:
             return array
 
-        return -1     
+        return -1  
+
+    def read_all_ship_pos_scale3( self, batch ):
+        """
+        Insert a batch of messages
+
+        :param batch: a string that represent a JSON array of docs
+        :type batch: str
+        :return: list of (Port or Position) documents 
+        :rtype: list
+        """
+        try:
+            array = json.loads( batch )
+            assert batch != "" and batch != None
+        except Exception as e:
+            return -1
+
+        if self.is_stub:
+            return array
+
+        return -1        
 
 
-        
+
 
 
 class TMBTest( unittest.TestCase ):
@@ -177,6 +197,24 @@ class TMBTest( unittest.TestCase ):
         array = json.loads( self.batch )
         ships = tmb.read_most_recent_ship_pos( array )
         self.assertEqual(ships, -1) 
+
+    def test_all_ship_pos_scale3_1( self ):
+        """
+        Function `read_all_ship_pos_scale3` takes a JSON parsable string as an input.
+        Returns: list of (Port or Position) documents
+        """
+        tmb = TMB_DAO(True)
+        documents = tmb.read_all_ship_pos_scale3( self.batch )
+        self.assertTrue(type(documents) is  list) 
+
+    def test_all_ship_pos_scale3_2( self ):
+        """
+        Function `read_all_ship_pos_scale3` fails nicely if input is not JSON parsable, or is empty.
+        """
+        tmb = TMB_DAO(True) 
+        array = json.loads( self.batch )
+        documents = tmb.read_all_ship_pos_scale3( array )
+        self.assertEqual(documents, -1)    
 
 
 if __name__ == '__main__':
