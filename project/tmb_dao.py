@@ -20,9 +20,11 @@ class TMB_DAO:
         :return: Number of successful deletions
         :rtype: int
         """
+        if batch == "" or batch == None:
+            return -1 
+        
         try:
             array = json.loads( batch )
-            assert batch != "" and batch != None
         except Exception as e:
             return -1
 
@@ -42,9 +44,11 @@ class TMB_DAO:
         :return: Number of successful insertions
         :rtype: int
         """
+        if batch == "" or batch == None:
+            return -1 
+
         try:
             array = json.loads( batch )
-            assert batch != "" and batch != None
         except Exception as e:
             return -1
 
@@ -62,9 +66,11 @@ class TMB_DAO:
         :return: list of ship documents
         :rtype: list
         """
+        if batch == "" or batch == None:
+            return -1 
+
         try:
             array = json.loads( batch )
-            assert batch != "" and batch != None
         except Exception as e:
             return -1
 
@@ -82,9 +88,11 @@ class TMB_DAO:
         :return: list of Port documents
         :rtype: list
         """
+        if batch == "" or batch == None:
+            return -1 
+
         try:
             array = json.loads( batch )
-            assert batch != "" and batch != None
         except Exception as e:
             return -1
 
@@ -102,14 +110,38 @@ class TMB_DAO:
         :return: list of (Port or Position) documents 
         :rtype: list
         """
+        if batch == "" or batch == None:
+            return -1 
+
         try:
             array = json.loads( batch )
-            assert batch != "" and batch != None
+        except Exception as e:
+            return -1   
+
+        if self.is_stub:
+            return array
+
+        return -1    
+
+    def read_last_5_pos( self, batch ):
+        """
+        Insert a batch of messages
+
+        :param batch: a string that represent a JSON array of docs
+        :type batch: str
+        :return: a single document 
+        :rtype: dict
+        """
+        if batch == "" or batch == None:
+            return -1 
+
+        try:
+            array = json.loads( batch )
         except Exception as e:
             return -1
 
         if self.is_stub:
-            return array
+            return array[0]
 
         return -1        
 
@@ -214,7 +246,25 @@ class TMBTest( unittest.TestCase ):
         tmb = TMB_DAO(True) 
         array = json.loads( self.batch )
         documents = tmb.read_all_ship_pos_scale3( array )
-        self.assertEqual(documents, -1)    
+        self.assertEqual(documents, -1)   
+
+    def test_read_last_5_pos1( self ):
+        """
+        Function `read_last_5_pos` takes a JSON parsable string as an input.
+        Returns: a single document (dict)
+        """
+        tmb = TMB_DAO(True)
+        document = tmb.read_last_5_pos( self.batch )
+        self.assertTrue(type(document) is  dict) 
+
+    def test_read_last_5_pos2( self ):
+        """
+        Function `read_last_5_pos` fails nicely if input is not JSON parsable, or is empty.
+        """
+        tmb = TMB_DAO(True) 
+        array = json.loads( self.batch )
+        document = tmb.read_last_5_pos( array )
+        self.assertEqual(document, -1)     
 
 
 if __name__ == '__main__':
