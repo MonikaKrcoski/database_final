@@ -59,8 +59,8 @@ class TMB_DAO:
 
         :param batch: a string that represent a JSON array of docs
         :type batch: str
-        :return: Number of successful insertions
-        :rtype: int
+        :return: list of ship documents
+        :rtype: list
         """
         try:
             array = json.loads( batch )
@@ -72,6 +72,29 @@ class TMB_DAO:
             return array
 
         return -1    
+
+    def read_all_ports( self, batch ):
+        """
+        Insert a batch of messages
+
+        :param batch: a string that represent a JSON array of docs
+        :type batch: str
+        :return: list of Port documents
+        :rtype: list
+        """
+        try:
+            array = json.loads( batch )
+            assert batch != "" and batch != None
+        except Exception as e:
+            return -1
+
+        if self.is_stub:
+            return array
+
+        return -1     
+
+
+        
 
 
 class TMBTest( unittest.TestCase ):
@@ -86,18 +109,15 @@ class TMBTest( unittest.TestCase ):
     def test_insert_message_batch_interface_1( self ):
         """
         Function `insert_message_batch` takes a JSON parsable string as an input.
-        Return type: int
+        Returns: number (int) of insertions
         """
         tmb = TMB_DAO(True) 
         inserted_count = tmb.insert_message_batch( self.batch )
         self.assertTrue(type(inserted_count) is  int and inserted_count >=0) 
 
-        # check for empty input
-
     def test_insert_message_batch_interface_2( self ):
         """
         Function `insert_message_batch` fails nicely if input is not JSON parsable, or is empty.
-        Return type: int
         """
         tmb = TMB_DAO(True) 
         array = json.loads( self.batch )
@@ -107,7 +127,7 @@ class TMBTest( unittest.TestCase ):
     def test_delete_all_msg_timestamp_1( self ):      
         """
         Function `delete_all_msg_timestamp` takes a JSON parsable string as an input.
-        Return type: int
+        Returns: number (int) of deletions
         """
         tmb = TMB_DAO(True)
         deletion_count = tmb.delete_all_msg_timestamp( self.batch )
@@ -116,7 +136,6 @@ class TMBTest( unittest.TestCase ):
     def test_delete_all_msg_timestamp_2( self ):
         """
         Function `delete_all_msg_timestamp` fails nicely if input is not JSON parsable, or is empty.
-        Return type: int
         """
         tmb = TMB_DAO(True) 
         array = json.loads( self.batch )
@@ -126,7 +145,7 @@ class TMBTest( unittest.TestCase ):
     def test_read_most_recent_ship_pos1( self ):
         """
         Function `read_most_recent_ship_pos` takes a JSON parsable string as an input.
-        Return type: list
+        Returns: list of ship documents
         """
         tmb = TMB_DAO(True)
         ships = tmb.read_most_recent_ship_pos( self.batch )
@@ -135,12 +154,29 @@ class TMBTest( unittest.TestCase ):
     def test_read_most_recent_ship_pos2( self ):
         """
         Function `read_most_recent_ship_pos` fails nicely if input is not JSON parsable, or is empty.
-        Return type: list
         """
         tmb = TMB_DAO(True) 
         array = json.loads( self.batch )
         ships = tmb.read_most_recent_ship_pos( array )
-        self.assertEqual(ships, -1)    
+        self.assertEqual(ships, -1)  
+
+    def test_read_all_ports1( self ):
+        """
+        Function `read_all_ports` takes a JSON parsable string as an input.
+        Returns: list of Port documents
+        """
+        tmb = TMB_DAO(True)
+        ships = tmb.read_most_recent_ship_pos( self.batch )
+        self.assertTrue(type(ships) is  list) 
+
+    def test_read_all_ports2( self ):
+        """
+        Function `read_all_ports` fails nicely if input is not JSON parsable, or is empty.
+        """
+        tmb = TMB_DAO(True) 
+        array = json.loads( self.batch )
+        ships = tmb.read_most_recent_ship_pos( array )
+        self.assertEqual(ships, -1) 
 
 
 if __name__ == '__main__':
