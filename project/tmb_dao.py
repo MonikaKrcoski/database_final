@@ -22,6 +22,7 @@ class TMB_DAO:
         """
         try:
             array = json.loads( batch )
+            assert batch != "" and batch != None
         except Exception as e:
             return -1
 
@@ -43,6 +44,7 @@ class TMB_DAO:
         """
         try:
             array = json.loads( batch )
+            assert batch != "" and batch != None
         except Exception as e:
             return -1
 
@@ -63,9 +65,10 @@ class TMBTest( unittest.TestCase ):
                 {\"Timestamp\":\"2020-11-18T00:00:00.000Z\",\"Class\":\"Class A\",\"MMSI\":257385000,\"MsgType\":\"position_report\",\"Position\":{\"type\":\"Point\",\"coordinates\":[55.219403,13.127725]},\"Status\":\"Under way using engine\",\"RoT\":25.7,\"SoG\":12.3,\"CoG\":96.5,\"Heading\":101},
                 {\"Timestamp\":\"2020-11-18T00:00:00.000Z\",\"Class\":\"Class A\",\"MMSI\":376503000,\"MsgType\":\"position_report\",\"Position\":{\"type\":\"Point\",\"coordinates\":[54.519373,11.47914]},\"Status\":\"Under way using engine\",\"RoT\":0,\"SoG\":7.6,\"CoG\":294.4,\"Heading\":290} ]"""
 
-    def test_insert_message_batch_interface_1( self  ):
+    def test_insert_message_batch_interface_1( self ):
         """
         Function `insert_message_batch` takes a string as an input.
+        Return type: int
         """
         tmb = TMB_DAO(True) 
         inserted_count = tmb.insert_message_batch( self.batch )
@@ -73,31 +76,36 @@ class TMBTest( unittest.TestCase ):
 
         # check for empty input
 
-    def test_insert_message_batch_interface_2( self  ):
+    def test_insert_message_batch_interface_2( self ):
         """
-        Function `insert_message_batch` fails nicely if input is not JSON parsable.
+        Function `insert_message_batch` fails nicely if input is not JSON parsable, or is empty.
+        Return type: int
         """
         tmb = TMB_DAO(True) 
         array = json.loads( self.batch )
         inserted_count = tmb.insert_message_batch( array )
-        self.assertEqual( inserted_count, -1)  
+        self.assertEqual(inserted_count, -1)  
 
     def test_delete_all_msg_timestamp_1( self ):      
         """
         Function `delete_all_msg_timestamp` takes a string as an input.
+        Return type: int
         """
         tmb = TMB_DAO(True)
         inserted_count = tmb.delete_all_msg_timestamp( self.batch )
-        self.assertTrue( type(inserted_count) is  int)
+        self.assertTrue(type(inserted_count) is  int)
 
     def test_delete_all_msg_timestamp_2( self ):
         """
-        Function `delete_all_msg_timestamp` fails nicely if input is not JSON parsable.
+        Function `delete_all_msg_timestamp` fails nicely if input is not JSON parsable, or is empty.
+        Return type: int
         """
         tmb = TMB_DAO(True) 
         array = json.loads( self.batch )
         inserted_count = tmb.delete_all_msg_timestamp( array )
         self.assertEqual( inserted_count, -1)
+
+        
 
 
 if __name__ == '__main__':
