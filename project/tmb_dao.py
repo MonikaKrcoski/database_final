@@ -4,6 +4,8 @@ from datetime import datetime
 from datetime import timedelta
 
 # from mysqlutils import SQL_runner
+import sys, re
+from mysqlutils import SQL_runner
 
 
 class TMB_DAO:
@@ -143,8 +145,73 @@ class TMB_DAO:
         if self.is_stub:
             return array[0]
 
-        return -1        
+        return -1
 
+    def read_position_to_port_id(self, batch):
+        """
+        Read most recent positions of ships headed to port with given ID
+
+        :param batch: a string that represent a JSON array of docs
+        :type batch: str
+        :return: an array of position documents
+        :rtype: dict
+        """
+        if batch == "" or batch == None:
+            return -1
+
+        try:
+            array = json.loads( batch )
+        except Exception as e:
+            return -1
+
+        if self.is_stub:
+            return array[0]
+
+        return -1
+
+    def read_position_given_port(self, batch):
+        """
+        Read most recent positions of ships headed to given port
+
+        :param batch: a string that represent a JSON array of docs
+        :type batch: str
+        :return: an array of position documents or array of port documents
+        :rtype: dict
+        """
+        if batch == "" or batch == None:
+            return -1
+
+        try:
+            array = json.loads( batch )
+        except Exception as e:
+            return -1
+
+        if self.is_stub:
+            return array[0]
+
+        return -1
+
+    def find_tiles_zoom_2(self, batch):
+        """
+        Given a background map tile for zoom level 1 (2), find the 4 tiles of zoom level 2 (3) that are contained in it
+
+        :param batch: a string that represent a JSON array of docs
+        :type batch: str
+        :return: an array of map tile description documents
+        :rtype: dict
+        """
+        if batch == "" or batch == None:
+            return -1
+
+        try:
+            array = json.loads( batch )
+        except Exception as e:
+            return -1
+
+        if self.is_stub:
+            return array[0]
+
+        return -1
 
 
 
@@ -165,7 +232,7 @@ class TMBTest( unittest.TestCase ):
         """
         tmb = TMB_DAO(True) 
         inserted_count = tmb.insert_message_batch( self.batch )
-        self.assertTrue(type(inserted_count) is  int and inserted_count >=0) 
+        self.assertTrue(type(inserted_count) is int and inserted_count >=0)
 
     def test_insert_message_batch_interface_2( self ):
         """
@@ -183,7 +250,7 @@ class TMBTest( unittest.TestCase ):
         """
         tmb = TMB_DAO(True)
         deletion_count = tmb.delete_all_msg_timestamp( self.batch )
-        self.assertTrue(type(deletion_count) is  int)
+        self.assertTrue(type(deletion_count) is int)
 
     def test_delete_all_msg_timestamp_2( self ):
         """
@@ -201,7 +268,7 @@ class TMBTest( unittest.TestCase ):
         """
         tmb = TMB_DAO(True)
         ships = tmb.read_most_recent_ship_pos( self.batch )
-        self.assertTrue(type(ships) is  list) 
+        self.assertTrue(type(ships) is list)
 
     def test_read_most_recent_ship_pos2( self ):
         """
@@ -219,7 +286,7 @@ class TMBTest( unittest.TestCase ):
         """
         tmb = TMB_DAO(True)
         ships = tmb.read_most_recent_ship_pos( self.batch )
-        self.assertTrue(type(ships) is  list) 
+        self.assertTrue(type(ships) is list)
 
     def test_read_all_ports2( self ):
         """
@@ -237,7 +304,7 @@ class TMBTest( unittest.TestCase ):
         """
         tmb = TMB_DAO(True)
         documents = tmb.read_all_ship_pos_scale3( self.batch )
-        self.assertTrue(type(documents) is  list) 
+        self.assertTrue(type(documents) is list)
 
     def test_all_ship_pos_scale3_2( self ):
         """
@@ -255,7 +322,7 @@ class TMBTest( unittest.TestCase ):
         """
         tmb = TMB_DAO(True)
         document = tmb.read_last_5_pos( self.batch )
-        self.assertTrue(type(document) is  dict) 
+        self.assertTrue(type(document) is dict)
 
     def test_read_last_5_pos2( self ):
         """
@@ -264,7 +331,61 @@ class TMBTest( unittest.TestCase ):
         tmb = TMB_DAO(True) 
         array = json.loads( self.batch )
         document = tmb.read_last_5_pos( array )
-        self.assertEqual(document, -1)     
+        self.assertEqual(document, -1)
+
+    def test_read_position_to_port_id1(self):
+        """
+        Function 'read_position_to_port_id' takes a JSON parsable string as an input.
+        Returns: an array of documents
+        """
+        tmb = TMB_DAO(True)
+        document = tmb.read_position_to_port_id(self.batch)
+        self.assertEqual(type(document) is list)
+
+    def test_read_position_to_port_id2(self):
+        """
+        Function `read_position_to_port_id` fails nicely if input is not JSON parsable, or is empty.
+        """
+        tmb = TMB_DAO(True)
+        array = json.loads(self.batch)
+        document = tmb.read_position_to_port_id(array)
+        self.assertEqual(document, -1)
+
+    def test_read_position_given_port1(self):
+        """
+        Function 'read_position_given_port' takes a JSON parsable string as an input.
+        Returns: an array of documents
+        """
+        tmb = TMB_DAO(True)
+        document = tmb.read_position_given_port(self.batch)
+        self.assertEqual(type(document) is list)
+
+    def test_read_position_given_port2(self):
+        """
+        Function `read_position_given_port` fails nicely if input is not JSON parsable, or is empty.
+        """
+        tmb = TMB_DAO(True)
+        array = json.loads(self.batch)
+        document = tmb.read_position_given_port(array)
+        self.assertEqual(document, -1)
+
+    def test_find_tiles_zoom_2_1(self):
+        """
+        Function 'find_tiles_zoom_2' takes a JSON parsable string as an input.
+        Returns: an array of documents
+        """
+        tmb = TMB_DAO(True)
+        document = tmb.find_tiles_zoom_2(self.batch)
+        self.assertEqual(type(document) is list)
+
+    def test_find_tiles_zoom_2_2(self):
+        """
+        Function `find_tiles_zoom_2` fails nicely if input is not JSON parsable, or is empty.
+        """
+        tmb = TMB_DAO(True)
+        array = json.loads(self.batch)
+        document = tmb.find_tiles_zoom_2(array)
+        self.assertEqual(document, -1)
 
 
 if __name__ == '__main__':
