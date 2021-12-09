@@ -1,11 +1,9 @@
 import unittest
 import json
-from datetime import datetime
-from datetime import timedelta
 
+# # from mysqlutils import SQL_runner
+# import sys, re
 # from mysqlutils import SQL_runner
-import sys, re
-from mysqlutils import SQL_runner
 
 
 class TMB_DAO:
@@ -27,7 +25,7 @@ class TMB_DAO:
         
         try:
             array = json.loads( batch )
-        except Exception as e:
+        except Exception:
             return -1
 
         if self.is_stub:
@@ -51,7 +49,7 @@ class TMB_DAO:
 
         try:
             array = json.loads( batch )
-        except Exception as e:
+        except Exception:
             return -1
 
         if self.is_stub:
@@ -73,7 +71,7 @@ class TMB_DAO:
 
         try:
             array = json.loads( batch )
-        except Exception as e:
+        except Exception:
             return -1
 
         if self.is_stub:
@@ -95,7 +93,7 @@ class TMB_DAO:
 
         try:
             array = json.loads( batch )
-        except Exception as e:
+        except Exception:
             return -1
 
         if self.is_stub:
@@ -117,7 +115,7 @@ class TMB_DAO:
 
         try:
             array = json.loads( batch )
-        except Exception as e:
+        except Exception:
             return -1   
 
         if self.is_stub:
@@ -139,7 +137,7 @@ class TMB_DAO:
 
         try:
             array = json.loads( batch )
-        except Exception as e:
+        except Exception:
             return -1
 
         if self.is_stub:
@@ -153,19 +151,19 @@ class TMB_DAO:
 
         :param batch: a string that represent a JSON array of docs
         :type batch: str
-        :return: an array of position documents
-        :rtype: dict
+        :return: a list of position documents
+        :rtype: list
         """
         if batch == "" or batch == None:
             return -1
 
         try:
             array = json.loads( batch )
-        except Exception as e:
+        except Exception:
             return -1
 
         if self.is_stub:
-            return array[0]
+            return array
 
         return -1
 
@@ -175,19 +173,19 @@ class TMB_DAO:
 
         :param batch: a string that represent a JSON array of docs
         :type batch: str
-        :return: an array of position documents or array of port documents
-        :rtype: dict
+        :return: a list of position documents or array of port documents
+        :rtype: list
         """
         if batch == "" or batch == None:
             return -1
 
         try:
             array = json.loads( batch )
-        except Exception as e:
+        except Exception:
             return -1
 
         if self.is_stub:
-            return array[0]
+            return array
 
         return -1
 
@@ -197,19 +195,19 @@ class TMB_DAO:
 
         :param batch: a string that represent a JSON array of docs
         :type batch: str
-        :return: an array of map tile description documents
-        :rtype: dict
+        :return: a list of map tile description documents
+        :rtype: list
         """
         if batch == "" or batch == None:
             return -1
 
         try:
             array = json.loads( batch )
-        except Exception as e:
+        except Exception:
             return -1
 
         if self.is_stub:
-            return array[0]
+            return array
 
         return -1
 
@@ -336,11 +334,11 @@ class TMBTest( unittest.TestCase ):
     def test_read_position_to_port_id1(self):
         """
         Function 'read_position_to_port_id' takes a JSON parsable string as an input.
-        Returns: an array of documents
+        Returns: a list of documents
         """
         tmb = TMB_DAO(True)
         document = tmb.read_position_to_port_id(self.batch)
-        self.assertEqual(type(document) is list)
+        self.assertTrue(type(document) is list)
 
     def test_read_position_to_port_id2(self):
         """
@@ -354,11 +352,11 @@ class TMBTest( unittest.TestCase ):
     def test_read_position_given_port1(self):
         """
         Function 'read_position_given_port' takes a JSON parsable string as an input.
-        Returns: an array of documents
+        Returns: a list of documents
         """
         tmb = TMB_DAO(True)
         document = tmb.read_position_given_port(self.batch)
-        self.assertEqual(type(document) is list)
+        self.assertTrue(type(document) is list)
 
     def test_read_position_given_port2(self):
         """
@@ -372,11 +370,11 @@ class TMBTest( unittest.TestCase ):
     def test_find_tiles_zoom_2_1(self):
         """
         Function 'find_tiles_zoom_2' takes a JSON parsable string as an input.
-        Returns: an array of documents
+        Returns: a list of documents
         """
         tmb = TMB_DAO(True)
         document = tmb.find_tiles_zoom_2(self.batch)
-        self.assertEqual(type(document) is list)
+        self.assertTrue(type(document) is list)
 
     def test_find_tiles_zoom_2_2(self):
         """
